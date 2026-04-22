@@ -42,8 +42,9 @@ void InfoApp::render(AppManager& manager) {
     }
 
     int batteryPercent = manager.battery().getPercent();
+    Serial.printf("Battery percent: %d%%\n", batteryPercent);
     float batteryAdcVoltage = manager.battery().getFilteredVoltage();
-
+    Serial.printf("Battery ADC voltage: %.2f V\n", batteryAdcVoltage);
     char buf[32];
 
     snprintf(buf, sizeof(buf), "Battery: %d%%", batteryPercent);

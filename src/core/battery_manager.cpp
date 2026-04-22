@@ -23,8 +23,8 @@ void BatteryManager::update() {
 
     if (sampleCount_ >= SAMPLE_BATCH) {
         float rawAvg = sampleSum_ / (float)sampleCount_;
-        float voltage = (rawAvg / 4095.0f) * 3.33f;
-
+        float voltage = (rawAvg / 4095.0f) * 3.2f;
+        Serial.printf("Battery ADC average: %.2f, voltage: %.2f V\n", rawAvg, voltage);
         if (!initialized_) {
             filteredVoltage_ = voltage;
             initialized_ = true;
@@ -32,7 +32,7 @@ void BatteryManager::update() {
             // smoothing
             filteredVoltage_ = filteredVoltage_ * 0.85f + voltage * 0.15f;
         }
-
+        Serial.printf("Battery filtered voltage: %.2f V\n", filteredVoltage_);
         sampleSum_ = 0;
         sampleCount_ = 0;
     }
@@ -50,7 +50,7 @@ float BatteryManager::readAdcVoltage() {
     // 12-bit ADC, approx 3.3V reference
     // since you already measured real voltages on this divider,
     // this is enough for UI percent indicator
-    float voltage = (raw / 4095.0f) * 3.33f;
+    float voltage = (raw / 4095.0f) * 3.2f;
     Serial.printf("Battery ADC raw: %.2f, voltage: %.2f V\n", raw, voltage);
     return voltage;
 }
@@ -60,30 +60,30 @@ float BatteryManager::getFilteredVoltage() const {
 }
 
 int BatteryManager::mapPercent(float v) const {
-    if (v >= 3.30f) return 100;
-    if (v <= 2.40f) return 0;
+    if (v >= 3.20f) return 100;
+    if (v <= 2.28f) return 0;
 
     float percent;
 
-    if (v >= 3.20f) {
-        // 3.20 - 3.30 → 80% - 100%
-        percent = 80.0f + (v - 3.20f) * (20.0f / 0.10f);
+    if (v >= 3.10f) {
+        // 3.10 - 3.20 → 80% - 100%
+        percent = 80.0f + (v - 3.10f) * (20.0f / 0.10f);
     } 
-    else if (v >= 3.08f) {
-        // 3.08 - 3.20 → 60% - 80%
-        percent = 60.0f + (v - 3.08f) * (20.0f / 0.12f);
+    else if (v >= 3.00f) {
+        // 3.00 - 3.10 → 60% - 80%
+        percent = 60.0f + (v - 3.00f) * (20.0f / 0.10f);
     } 
-    else if (v >= 2.96f) {
-        // 2.96 - 3.08 → 40% - 60%
-        percent = 40.0f + (v - 2.96f) * (20.0f / 0.12f);
+    else if (v >= 2.90f) {
+        // 2.90 - 3.00 → 40% - 60%
+        percent = 40.0f + (v - 2.90f) * (20.0f / 0.10f);
     } 
-    else if (v >= 2.80f) {
-        // 2.80 - 2.96 → 20% - 40%
-        percent = 20.0f + (v - 2.80f) * (20.0f / 0.16f);
+    else if (v >= 2.70f) {
+        // 2.70 - 2.90 → 20% - 40%
+        percent = 20.0f + (v - 2.70f) * (20.0f / 0.20f);
     } 
     else {
-        // 2.40 - 2.80 → 0% - 20%
-        percent = (v - 2.40f) * (20.0f / 0.40f);
+        // 2.28 - 2.70 → 0% - 20%
+        percent = (v - 2.28f) * (20.0f / 0.42f);
     }
 
     if (percent < 0) percent = 0;
