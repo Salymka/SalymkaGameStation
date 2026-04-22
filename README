@@ -3,6 +3,14 @@
 A portable mini game console built on **ESP32** with OLED display, buttons, sound, and motion sensor support.
 Designed as a compact, battery-powered device with simple UI and expandable architecture.
 
+## 📸 Preview
+
+<p align="center">
+  <img src="Photos/1.jpg" width="300"/>
+  <img src="Photos/2.jpg" width="300"/>
+  <img src="Photos/3.jpg" width="300"/>
+</p>
+
 ---
 
 ## 🚀 Features
